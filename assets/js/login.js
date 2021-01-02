@@ -35,7 +35,7 @@ $(function() {
                 username: $('#form_reg [name=username] ').val(),
                 password: $('#form_reg [name=password] ').val()
             }
-            $.post("http://ajax.frontend.itheima.net/api/reguser", data,
+            $.post("/api/reguser", data,
                 function(res) {
                     // console.log(res);
                     if (res.status !== 0) {
@@ -49,22 +49,27 @@ $(function() {
         })
         // 监听登录表单的注册事件
     $('#form_login').on('submit', function(e) {
-            e.preventDefault()
-            $.ajax({
-                type: 'POST',
-                url: 'http://ajax.frontend.itheima.net/api/login',
-                data: $(this).serialize(),
-                success: function(res) {
-                    if (res.status !== 0) {
-                        return layer.msg('登录失败')
-                    }
-                    layer.msg('登录成功')
-                        // 将登录成功得到的token字符串保存到本地缓存中
-                    localStorage.setItem('token', res.token)
-                        // 登录成功自动跳转到后台主页
-                    location.href = '/index.html'
+        // 组织表单默认提交行为
+        e.preventDefault()
+        $.ajax({
+            type: 'POST',
+            url: '/api/login',
+            data: $(this).serialize(),
+            success: function(res) {
+                if (res.status !== 0) {
+                    return layer.msg('登录失败')
                 }
-            })
+                layer.msg('登录成功')
+                    // 将登录成功得到的token字符串保存到本地缓存中
+                localStorage.setItem('token', res.token)
+                    // 登录成功自动跳转到后台主页
+                location.href = '/index.html'
+            },
+            // 这个函数是jquery里面的ajax方法
+            // 规定了ajax是否成功都会执行这个函数
+
         })
-        // 这是入口函数结尾
+    })
+
+    // 这是入口函数结尾
 })
